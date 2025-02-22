@@ -55,7 +55,7 @@ export function Conversation(
       onToolUsed("Getting details for Jira issue...")
       try {
         const response = await fetch(
-          `${backend_url}/meeting/${meetingId}/api/jira/getIssue`
+          `${backend_url}/meeting/${meetingId}/api/jira/getIssue?issue_id=${issueId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch details for Jira issue");
@@ -97,7 +97,6 @@ export function Conversation(
         return JSON.stringify({ tickets: [], error: "Error getting jira tickets" });
       }
     },
-
 
     editJiraIssue: async ({ meetingId, issue_id, title, description, assignee_id, due_date }: { meetingId: string, issue_id: string, title?: string, description?: string, assignee_id?: string, due_date?: string }) => {
       console.log("getJiraIssuesForUser called");
