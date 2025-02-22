@@ -1,12 +1,17 @@
 {
+    "project": {
+        "id": "78894c0e-8864-4909-99cf-007f4d0a301f",
+        "jira": {
+            "project_key": "EX"
+        }
+    },
     "users": {
         "f50ad4c3-4ca5-4343-8ba9-e3c02b3456a2": {
             "id": "f50ad4c3-4ca5-4343-8ba9-e3c02b3456a2",
-            "meeting_ids": [],
             "full_name": "Chris Yoo",
             "gender": "M",
             "github_id": "123456",
-            "jira_id": "123456"
+            "jira_id": "712020:a8a30946-e83b-4066-95ae-663a74bf7484"
         }
     },
     "meetings": {}
