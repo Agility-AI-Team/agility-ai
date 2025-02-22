@@ -10,10 +10,10 @@ export default {
     extend: {
       colors: {
         text: '#e3edf7',
-        background: '#120b38',
-        primary: '#551fd4',
-        secondary: '#7635cf',
-        accent: '#7b4dbf',
+        background: '#050910',
+        primary: '#99bce1',
+        secondary: '#38257e',
+        accent: '#7144c8',
       },
       keyframes: {
         pulseExpand: {
@@ -33,10 +33,3 @@ export default {
     }
   ]
 } satisfies Config;
-
-
-//         text: '#e3edf7',
-//         background: '#050910',
-//         primary: '#99bce1',
-//         secondary: '#38257e',
-//         accent: '#7144c8',

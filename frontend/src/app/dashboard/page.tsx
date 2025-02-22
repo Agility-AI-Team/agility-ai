@@ -30,7 +30,7 @@ const styles = {
   },
   grid: "grid grid-cols-1 md:grid-cols-3 gap-4",
   team: {
-    container: "bg-primary/20 rounded-lg p-6 backdrop-blur-sm border border-secondary/20",
+    container: "bg-secondary/20 rounded-lg p-6 backdrop-blur-sm border border-secondary/20",
     title: "text-2xl font-bold mb-4 text-text",
     list: "space-y-3",
     member: {
@@ -46,17 +46,17 @@ const styles = {
   },
   jiraTracker: {
     wrapper: "space-y-4",
-    container: "bg-primary/30 rounded-lg p-6 backdrop-blur-sm border border-secondary/30",
+    container: "bg-secondary/25 rounded-lg p-6 backdrop-blur-sm border border-secondary/30",
     title: "text-2xl font-bold mb-4 text-text",
     content: "space-y-4",
     section: {
       wrapper: "space-y-2",
-      title: "text-text font-semibold", // Changed from text-primary to text-text
+      title: "text-primary font-semibold",
       ticket: "bg-accent/20 rounded-lg px-4 py-3 text-text border border-accent/30"
     }
   },
   blockers: {
-    container: "bg-secondary/40 rounded-lg p-6 backdrop-blur-sm border border-accent/25",
+    container: "bg-accent/15 rounded-lg p-6 backdrop-blur-sm border border-accent/25",
     title: "text-2xl font-bold mb-4 text-text",
     list: "space-y-3",
     item: {
@@ -68,23 +68,23 @@ const styles = {
   rightColumn: {
     wrapper: "space-y-4",
     meetings: {
-      container: "bg-secondary/45 rounded-lg p-6 backdrop-blur-sm border border-secondary/40",
+      container: "bg-secondary/35 rounded-lg p-6 backdrop-blur-sm border border-secondary/40",
       title: "text-2xl font-bold mb-4 text-text",
       list: "space-y-2",
       item: "bg-secondary/20 p-3 rounded-lg border border-secondary/30",
       text: "text-text"
     },
     mood: {
-        container: "bg-secondary/30 rounded-lg p-6 backdrop-blur-sm border border-secondary/35",
-        title: "text-2xl font-bold mb-4 text-text",
-        content: "space-y-4",
-        status: {
-          wrapper: "bg-secondary/20 p-4 rounded-lg border border-secondary/30",
-          title: "text-xl font-semibold text-text mb-2", // Changed from text-primary to text-text
-          notes: "space-y-2",
-          note: "text-text"
-        }
+      container: "bg-secondary/30 rounded-lg p-6 backdrop-blur-sm border border-secondary/35",
+      title: "text-2xl font-bold mb-4 text-text",
+      content: "space-y-4",
+      status: {
+        wrapper: "bg-secondary/20 p-4 rounded-lg border border-secondary/30",
+        title: "text-xl font-semibold text-primary mb-2",
+        notes: "space-y-2",
+        note: "text-text"
       }
+    }
   }
 };
 
@@ -229,7 +229,6 @@ const teamData: TeamMember[] = [
 function App() {
   const [selectedMember, setSelectedMember] = useState<TeamMember>(teamData[0]);
   const [escalationNotes, setEscalationNotes] = useState<string[]>([]);
-
   const [meetingSummary, setMeetingSummary] = useState<string[]>([]);
 
   useEffect(() => {
@@ -335,32 +334,52 @@ function App() {
           </div>
 
           {/* Blockers Section */}
-          <div className={styles.blockers.container}>
+            <div className={styles.blockers.container}>
             <h2 className={styles.blockers.title}>Escalation</h2>
             <div className={styles.blockers.list}>
-              {escalationNotes.map((blocker, index) => (
+              {escalationNotes.length === 0 ? (
+              // Loading skeleton
+              <>
+                <div className="h-16 bg-accent/20 animate-pulse rounded-lg"></div>
+                <div className="h-16 bg-accent/20 animate-pulse rounded-lg"></div>
+                <div className="h-16 bg-accent/20 animate-pulse rounded-lg"></div>
+              </>
+              ) : (
+              // Actual content
+              escalationNotes.map((blocker, index) => (
                 <div key={index} className={styles.blockers.item.wrapper}>
-                  <AlertCircle className={styles.blockers.item.icon} />
-                  <span className={styles.blockers.item.text}>{blocker}</span>
+                <AlertCircle className={styles.blockers.item.icon} />
+                <span className={styles.blockers.item.text}>{blocker}</span>
                 </div>
-              ))}
+              ))
+              )}
             </div>
-          </div>
+            </div>
         </div>
 
         {/* Right Column */}
         <div className={styles.rightColumn.wrapper}>
-          {/* Meeting Summary */}
-          <div className={styles.rightColumn.meetings.container}>
+            {/* Meeting Summary */}
+            <div className={styles.rightColumn.meetings.container}>
             <h2 className={styles.rightColumn.meetings.title}>Meeting Summary</h2>
             <div className={styles.rightColumn.meetings.list}>
-              {meetingSummary.map((summary, index) => (
+              {meetingSummary.length === 0 ? (
+              // Loading skeleton
+                <>
+                <div className="h-12 bg-accent/20 animate-pulse rounded-lg"></div>
+                <div className="h-12 bg-primary/20 animate-pulse rounded-lg"></div>
+                <div className="h-12 bg-secondary/20 animate-pulse rounded-lg"></div>
+                </>
+              ) : (
+              // Actual content
+              meetingSummary.map((summary, index) => (
                 <div key={index} className={styles.rightColumn.meetings.item}>
-                  <p className={styles.rightColumn.meetings.text}>{summary}</p>
+                <p className={styles.rightColumn.meetings.text}>{summary}</p>
                 </div>
-              ))}
+              ))
+              )}
             </div>
-          </div>
+            </div>
 
           {/* How they're feeling */}
           <div className={styles.rightColumn.mood.container}>
