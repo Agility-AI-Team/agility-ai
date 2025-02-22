@@ -7,8 +7,8 @@ export function Conversation() {
   const conversation = useConversation({
     onConnect: () => console.log('Connected'),
     onDisconnect: () => console.log('Disconnected'),
-    onMessage: (message) => console.log('Message:', message),
-    onError: (error) => console.error('Error:', error),
+    onMessage: (message: string) => console.log('Message:', message),
+    onError: (error: string) => console.error('Error:', error),
   });
 
   const clientTools = {
