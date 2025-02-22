@@ -93,9 +93,9 @@ const teamData: TeamMember[] = [
     id: '1',
     name: 'Chris Yoo',
     jiraTickets: {
-      done: ['PROJ-123: Implement user authentication', 'PROJ-124: Fix navigation bugs'],
-      inProgress: ['PROJ-125: Add dashboard analytics'],
-      notStarted: ['PROJ-126: Optimize image loading']
+      done: ['EX-11 Optimize Performance for Large Whiteboards'],
+      inProgress: ['EX-5 Fix Frame Issues', 'EX-7 Integrate GitHub SSO'],
+      notStarted: ['EX-10 Add Support for Custom Fonts']
     },
     blockers: [
       'Waiting for API documentation from external team',

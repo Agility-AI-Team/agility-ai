@@ -36,7 +36,7 @@ export function Conversation(
   
   const clientTools = {
     escalateToManager: async ({meetingId, message}: { meetingId: string, message: string }) => {
-      onToolUsed("Escalating to manager...")
+      onToolUsed("Escalating to human manager...")
       try {
         const response = await fetch(
           `${backend_url}/meeting/${meetingId}/escalate`,
