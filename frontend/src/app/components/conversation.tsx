@@ -148,6 +148,10 @@ export function Conversation(
 
     changeJiraIssueStatus: async ({ meetingId, issueId, transitionId }: { meetingId: string, issueId: string, transitionId: string }) => {
       onToolUsed("Changing status of Jira issue...")
+      console.log(JSON.stringify({
+        issue_id: issueId,
+        transition_id: transitionId
+      }))
       try {
         const response = await fetch(
           `${backend_url}/meeting/${meetingId}/api/jira/transitionIssue`,

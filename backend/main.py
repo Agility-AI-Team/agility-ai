@@ -63,13 +63,13 @@ class CreateIssueRequest(BaseModel):
     due_date: Optional[str] = None # YYYY-MM-DD
 
 @app.post("/meeting/{meeting_id}/api/jira/createIssue")
-async def create_issue(meeting_id: str, request: CreateIssueRequest):
+async def create_issue(meeting_id: str, r: CreateIssueRequest):
     result = jira_create_issue(
         project_key=jira_project_key,
-        summary=request.title,
-        description=request.description,
-        assignee_id=request.assignee_id,
-        due_date=request.due_date,
+        summary=r.title,
+        description=r.description,
+        assignee_id=r.assignee_id,
+        due_date=r.due_date,
     )
     return result
 
@@ -81,14 +81,14 @@ class EditIssueRequest(BaseModel):
     due_date: Optional[str] = None # YYYY-MM-DD
 
 @app.put("/meeting/{meeting_id}/api/jira/editIssue")
-async def edit_issue(meeting_id: str, request: EditIssueRequest):
+async def edit_issue(meeting_id: str, r: EditIssueRequest):
     result = jira_edit_issue(
-        issue_id=request.issue_id,
-        status=request.status,
-        summary=request.title,
-        description=request.description,
-        assignee_id=request.assignee_id,
-        due_date=request.due_date,
+        issue_id=r.issue_id,
+        status=r.status,
+        summary=r.title,
+        description=r.description,
+        assignee_id=r.assignee_id,
+        due_date=r.due_date,
     )
     return result
 
@@ -102,8 +102,8 @@ class TransitionIssueRequest(BaseModel):
     transition_id: str
 
 @app.post("/meeting/{meeting_id}/api/jira/transitionIssue")
-async def change_issue_status(meeting_id: str, request: TransitionIssueRequest):
-    result = jira_transition_issue(issue_id=request.issue_id, transition_id=request.transition_id)
+async def change_issue_status(meeting_id: str, r: TransitionIssueRequest):
+    result = jira_transition_issue(issue_id=r.issue_id, transition_id=r.transition_id)
     return result
 
 # GitHub
