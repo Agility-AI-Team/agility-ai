@@ -9,11 +9,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        text: 'var(--text)',
-        background: 'var(--background)',
-        primary: 'var(--primary)',
-        secondary: 'var(--secondary)',
-        accent: 'var(--accent)',
+        text: '#e3edf7',
+        background: '#050910',
+        primary: '#99bce1',
+        secondary: '#38257e',
+        accent: '#7144c8',
       },
       keyframes: {
         pulseExpand: {
@@ -27,5 +27,10 @@ export default {
     },
   },
   plugins: [],
+  safelist: [
+    {
+      pattern: /bg-(secondary|primary|accent)\/[0-9]+/,
+    }
+  ]
 } satisfies Config;
 
