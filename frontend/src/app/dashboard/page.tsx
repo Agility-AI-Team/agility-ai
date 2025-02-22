@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { User, AlertCircle } from 'lucide-react';
 
 interface TeamMember {
@@ -17,6 +17,8 @@ interface TeamMember {
     notes: string[];
   };
 }
+
+const backend_url = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const styles = {
   container: "min-h-screen bg-background p-8",
@@ -226,6 +228,25 @@ const teamData: TeamMember[] = [
 
 function App() {
   const [selectedMember, setSelectedMember] = useState<TeamMember>(teamData[0]);
+  const [escalationNotes, setEscalationNotes] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchEscalationNotes = async () => {
+      try {
+        const response = await fetch(`${backend_url}/meeting/78b6b5c5-4d2e-41ad-aef5-5b039994c7db/getEscalationNotes`, {
+          headers: {
+            'Accept': 'application/json',
+          }
+        });
+        const data = await response.json();
+        setEscalationNotes(data?.escalation_notes || []);
+      } catch (error) {
+        console.error('Failed to fetch escalation notes:', error);
+      }
+    };
+
+    fetchEscalationNotes();
+  }, [selectedMember]);
 
   return (
     <div className={styles.container}>
@@ -239,7 +260,7 @@ function App() {
       <div className={styles.grid}>
         {/* Team Section */}
         <div className={styles.team.container}>
-          <h2 className={styles.team.title}>Team:</h2>
+          <h2 className={styles.team.title}>Team</h2>
           <div className={styles.team.list}>
             {teamData.map((member) => (
               <div 
@@ -263,7 +284,7 @@ function App() {
         {/* Jira Tracker */}
         <div className={styles.jiraTracker.wrapper}>
           <div className={styles.jiraTracker.container}>
-            <h2 className={styles.jiraTracker.title}>Jira Tracker:</h2>
+            <h2 className={styles.jiraTracker.title}>Jira Tracker</h2>
             <div className={styles.jiraTracker.content}>
               <div className={styles.jiraTracker.section.wrapper}>
                 <h3 className={styles.jiraTracker.section.title}>Done:</h3>
@@ -274,7 +295,7 @@ function App() {
                 ))}
               </div>
               <div className={styles.jiraTracker.section.wrapper}>
-                <h3 className={styles.jiraTracker.section.title}>In Progress:</h3>
+                <h3 className={styles.jiraTracker.section.title}>In Progress</h3>
                 {selectedMember.jiraTickets.inProgress.map((ticket, index) => (
                   <div key={index} className={styles.jiraTracker.section.ticket}>
                     {ticket}
@@ -282,7 +303,7 @@ function App() {
                 ))}
               </div>
               <div className={styles.jiraTracker.section.wrapper}>
-                <h3 className={styles.jiraTracker.section.title}>Not Started:</h3>
+                <h3 className={styles.jiraTracker.section.title}>Not Started</h3>
                 {selectedMember.jiraTickets.notStarted.map((ticket, index) => (
                   <div key={index} className={styles.jiraTracker.section.ticket}>
                     {ticket}
@@ -294,9 +315,9 @@ function App() {
 
           {/* Blockers Section */}
           <div className={styles.blockers.container}>
-            <h2 className={styles.blockers.title}>Blockers:</h2>
+            <h2 className={styles.blockers.title}>Escalation</h2>
             <div className={styles.blockers.list}>
-              {selectedMember.blockers.map((blocker, index) => (
+              {escalationNotes.map((blocker, index) => (
                 <div key={index} className={styles.blockers.item.wrapper}>
                   <AlertCircle className={styles.blockers.item.icon} />
                   <span className={styles.blockers.item.text}>{blocker}</span>
@@ -310,7 +331,7 @@ function App() {
         <div className={styles.rightColumn.wrapper}>
           {/* Meeting Summary */}
           <div className={styles.rightColumn.meetings.container}>
-            <h2 className={styles.rightColumn.meetings.title}>Meeting Summary:</h2>
+            <h2 className={styles.rightColumn.meetings.title}>Meeting Summary</h2>
             <div className={styles.rightColumn.meetings.list}>
               {selectedMember.meetingSummary.map((summary, index) => (
                 <div key={index} className={styles.rightColumn.meetings.item}>
@@ -322,7 +343,7 @@ function App() {
 
           {/* How they're feeling */}
           <div className={styles.rightColumn.mood.container}>
-            <h2 className={styles.rightColumn.mood.title}>How they're feeling:</h2>
+            <h2 className={styles.rightColumn.mood.title}>How we are feeling</h2>
             <div className={styles.rightColumn.mood.content}>
               <div className={styles.rightColumn.mood.status.wrapper}>
                 <h3 className={styles.rightColumn.mood.status.title}>

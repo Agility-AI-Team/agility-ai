@@ -22,7 +22,9 @@
     "78b6b5c5-4d2e-41ad-aef5-5b039994c7db": {
       "id": "78b6b5c5-4d2e-41ad-aef5-5b039994c7db",
       "user_id": "f50ad4c3-4ca5-4343-8ba9-e3c02b3456a2",
-      "escalation_notes": []
+      "escalation_notes": [
+        "Chris needs admin access to AWS to deploy cloud changes."
+      ]
     }
   }
 }

@@ -128,6 +128,12 @@ async def escalate(meeting_id: str, r: EscalateRequest):
     db["meetings"][meeting_id]["escalation_notes"].append(r.message)
     return {"success": True}
 
+@app.get("/meeting/{meeting_id}/getEscalationNotes")
+async def get_escalation_notes(meeting_id: str):
+    if meeting_id not in db["meetings"]:
+        return {"error": "Meeting not found"}
+    return {"escalation_notes": db["meetings"][meeting_id]["escalation_notes"]}
+
 # Admin
 @app.post("/save_db")
 async def save_db():

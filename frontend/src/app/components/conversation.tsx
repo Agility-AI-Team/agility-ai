@@ -35,14 +35,35 @@ export function Conversation(
   const backend_url = process.env.NEXT_PUBLIC_BACKEND_URL;
   
   const clientTools = {
-    escalateToManager: async ({message}: { message: string }) => {
+    escalateToManager: async ({meetingId, message}: { meetingId: string, message: string }) => {
       onToolUsed("Escalating to manager...")
-      return { message: "Escalated to manager" };
+      try {
+        const response = await fetch(
+          `${backend_url}/meeting/${meetingId}/escalate`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              message
+            })
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to escalate to manager");
+        }
+        const data = await response.json();
+        return JSON.stringify(data);
+      } catch (error) {
+        console.error("Error in getJiraIssuesForUser:", error);
+        return JSON.stringify({ error: "Error escalaing to manager" });
+      }
     },
     getProjectDetails: async () => {
       console.log("getProjectDetails called");
       onToolUsed("Getting project details...")
-      return { message: "The project involves designing and building an AI code editor that integrates advanced machine learning models with traditional code parsing techniques to create an environment capable of providing real-time, context-aware coding assistance. Developers are leveraging transformer-based architectures trained on diverse codebases to enable intelligent auto-completion, error detection, and debugging suggestions, while also incorporating customizable syntax highlighting and seamless integration with version control systems. The system is designed with a modular, scalable architecture that supports multiple programming languages, ensuring that both novice and expert developers benefit from enhanced productivity and code quality through continuous learning and iterative user feedback." };
+      return JSON.stringify({ message: "The project is Excalidraw. Excalidraw is an open-source virtual whiteboard for creating hand-drawn-style diagrams. It allows users to sketch and collaborate on flowcharts, wireframes, mind maps, and other visual representations in a freeform, intuitive manner. The tool features real-time collaboration, a customizable library of shapes and elements, and support for importing/exporting drawings. It is designed for simplicity and ease of use while maintaining flexibility for more complex diagrams. Excalidraw is commonly used by developers, designers, and educators for brainstorming and visual communication." });
     },
     getJiraIssues: async ({ meetingId }: { meetingId: string }) => {
       onToolUsed("Getting Jira issues for user...")
