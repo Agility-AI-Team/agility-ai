@@ -1,4 +1,4 @@
 export default interface DynamicVariables {
-  meeting_id: string;
+  meetingId: string;
   user_name: string;
 }
