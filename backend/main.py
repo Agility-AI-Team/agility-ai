@@ -7,6 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from uuid import uuid4
 import json
 
+from summary import Transcript, summarize_meeting
+
 app = FastAPI()
 
 app.add_middleware(
@@ -134,13 +136,23 @@ async def get_escalation_notes(meeting_id: str):
         return {"error": "Meeting not found"}
     return {"escalation_notes": db["meetings"][meeting_id]["escalation_notes"]}
 
+@app.post("/meeting/{meeting_id}/summary")
+async def generate_meeting_summary(meeting_id: str, transcript: Transcript):
+    try:
+        result = summarize_meeting(transcript)
+        
+        return {"meeting_summary": json.dumps(result.model_dump())}
+    except Exception as e:
+        return {"error": str(e)}
+  
+
 # Admin
 @app.post("/save_db")
 async def save_db():
     with open("db.json", "w") as f:
         json.dump(db, f, indent=2)
     return {"success": True}
-  
+
 @app.post("/ping")
 async def ping():
     return {"success": True}
