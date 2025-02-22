@@ -168,10 +168,11 @@ def jira_transition_issue(issue_id: str, transition_id: str):
     return {"success": False, "error": response.text}
 
 if __name__ == "__main__":
-    print(jira_get_issues("EX", "712020:a8a30946-e83b-4066-95ae-663a74bf7484"))
+    # print(jira_get_issues("EX", "712020:a8a30946-e83b-4066-95ae-663a74bf7484"))
     # Example usage:
     # print(jira_create_issue(project_key="EX", summary="Test Ticket", description="Test Description"))
     # print(jira_edit_issue("10009", summary="New Summary", description="New Description"))
     # print(jira_get_issue("10009"))
     # print(jira_get_issue_transitions("10009"))
     # print(jira_transition_issue("10009", "21"))
+    ...
