@@ -64,7 +64,7 @@ export default function MeetingPage() {
 
 
   const dynamicVariables: DynamicVariables = {
-    meeting_id: meeting_id,
+    meetingId: meeting_id,
     user_name: user.user.full_name,
   }
 
