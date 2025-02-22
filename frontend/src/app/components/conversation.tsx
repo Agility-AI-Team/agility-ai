@@ -177,22 +177,20 @@ export function Conversation(
       }
     },
 
-    getGitHubPRsForUser: async ({ meetingId }: { meetingId: string }) => {
-      console.log("getGitHubPRsForUser called");
-      onToolUsed("getGitHubPRs")
-      
+    getGitHubPullRequests: async ({ meetingId }: { meetingId: string }) => {
+      onToolUsed("Getting Pull Requests from GitHub...");
       try {
         const response = await fetch(
           `${backend_url}/meeting/${meetingId}/api/github/getPullRequests`
         );
         if (!response.ok) {
-          throw new Error("Failed to fetch GitHub pull requests");
+          throw new Error("Failed to get PRs from GitHub");
         }
         const data = await response.json();
         return JSON.stringify(data);
       } catch (error) {
-        console.error("Error in getGitHubPRsForUser:", error);
-        return JSON.stringify({ pull_requests: [], error: "Error getting github pull requests" });
+        console.error("Error in getGitHubPullRequests:", error);
+        return JSON.stringify({ pull_requests: [], error: "Error getting PRs from GitHub" });
       }
     },
   };

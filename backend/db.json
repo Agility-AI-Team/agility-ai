@@ -3,6 +3,10 @@
     "id": "78894c0e-8864-4909-99cf-007f4d0a301f",
     "jira": {
       "project_key": "EX"
+    },
+    "github": {
+      "owner": "Agility-AI-Team",
+      "repo": "excalidraw"
     }
   },
   "users": {

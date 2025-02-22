@@ -1,5 +1,6 @@
 from typing import Optional
 from jira import jira_create_issue, jira_edit_issue, jira_get_issue, jira_get_issue_transitions, jira_get_issues, jira_transition_issue
+from github import github_get_pull_requests
 from pydantic import BaseModel
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,6 +20,8 @@ app.add_middleware(
 with open("db.json") as f:
     db = json.load(f)
     jira_project_key = db["project"]["jira"]["project_key"]
+    github_owner = db["project"]["github"]["owner"]
+    github_repo = db["project"]["github"]["repo"]
 
 @app.post("/user/{user_id}/generate_meeting")
 async def generate_meeting_for_user(user_id: str):
@@ -112,9 +115,9 @@ async def get_issues_for_user(meeting_id: str):
     return {"issues": []}
 
 @app.get("/meeting/{meeting_id}/api/github/getPullRequests")
-async def get_pull_requests_for_user(meeting_id: str):
-    return {"pull_requests": []}
-
+async def get_pull_requests(meeting_id: str):
+    pull_requests = github_get_pull_requests(owner=github_owner, repo=github_repo)
+    return { "pull_requests": pull_requests }
 
 # Admin
 @app.post("/save_db")
