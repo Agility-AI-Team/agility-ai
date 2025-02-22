@@ -66,6 +66,8 @@ export default function MeetingPage() {
   const dynamicVariables: DynamicVariables = {
     meetingId: meeting_id,
     user_name: user.user.full_name,
+    user_jira_id: user.user.jira_id,
+    user_github_id: user.user.github_id
   }
 
   const onMessage = (message: Message) => {
