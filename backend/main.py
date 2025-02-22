@@ -32,6 +32,7 @@ async def generate_meeting_for_user(user_id: str):
     db["meetings"][meeting_id] = {
         "id": meeting_id,
         "user_id": user_id,
+        "escalation_notes": [],
     }
 
     return { "meeting_link": meeting_id }
@@ -117,6 +118,15 @@ async def get_issues_for_user(meeting_id: str):
 async def get_pull_requests(meeting_id: str):
     pull_requests = github_get_pull_requests(owner=github_owner, repo=github_repo)
     return { "pull_requests": pull_requests }
+
+# Other
+class EscalateRequest(BaseModel):
+    message: str
+
+@app.post("/meeting/{meeting_id}/escalate")
+async def escalate(meeting_id: str, r: EscalateRequest):
+    db["meetings"][meeting_id]["escalation_notes"].append(r.message)
+    return {"success": True}
 
 # Admin
 @app.post("/save_db")

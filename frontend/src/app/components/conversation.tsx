@@ -39,7 +39,7 @@ export function Conversation(
       onToolUsed("Escalating to manager...")
       return { message: "Escalated to manager" };
     },
-    getProjectDetails: async ({message}: { message: string }) => {
+    getProjectDetails: async () => {
       console.log("getProjectDetails called");
       onToolUsed("Getting project details...")
       return { message: "The project involves designing and building an AI code editor that integrates advanced machine learning models with traditional code parsing techniques to create an environment capable of providing real-time, context-aware coding assistance. Developers are leveraging transformer-based architectures trained on diverse codebases to enable intelligent auto-completion, error detection, and debugging suggestions, while also incorporating customizable syntax highlighting and seamless integration with version control systems. The system is designed with a modular, scalable architecture that supports multiple programming languages, ensuring that both novice and expert developers benefit from enhanced productivity and code quality through continuous learning and iterative user feedback." };
