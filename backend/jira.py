@@ -35,7 +35,7 @@ def textToDoc(text: str):
 def jira_get_issues(project_key: str, assignee_id: str):
     url = f"{BASE_URL}/search/jql"
     query = {
-        'jql': f'project = {project_key}',  # AND assignee = {assignee_id}',
+        'jql': f'project = {project_key} AND assignee = {assignee_id}',
         "fields": ["summary", "status", "assignee", "description"],
     }
     response = requests.get(url, headers=DEFAULT_HEADERS, auth=auth, params=query)
