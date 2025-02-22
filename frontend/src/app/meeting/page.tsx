@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import DynamicVariables from '../models/dynamicVariables';
 import { ChatSidebar } from "../components/chatSidebar";
 import Message from "../models/message";
+import { TranscriptItem, TranscriptItemType } from "../models/transcriptItem";
 
 interface User {
   user: {
@@ -28,7 +29,7 @@ export default function MeetingPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [inMeeting, setInMeeting] = useState(false);
-  const [transcript, setTranscript] = useState<string[]>([]);
+  const [transcript, setTranscript] = useState<TranscriptItem[]>([]);
 
   useEffect(() => {
     if (!meeting_id) {
@@ -71,12 +72,27 @@ export default function MeetingPage() {
 
   const onMessage = (message: Message) => {
     console.log(message);
-    setTranscript((prev) => [...prev, message.message]);
+
+    const item: TranscriptItem = {
+      type: TranscriptItemType.CHAT,
+      text: message.message
+    }
+    setTranscript((prev) => [...prev, item]);
   }
   
   const clearTranscript = () => {
     setTranscript([]);
   }
+
+  const onToolUse = (tool: string) => {
+    const item: TranscriptItem = {
+      type: TranscriptItemType.TOOL,
+      text: `Used ${tool}`
+    }
+    
+    setTranscript((prev) => [...prev, item]);
+  }
+
 
   return (
     <div className="min-h-screen bg-[#0A0A0B] flex items-center justify-center p-4">
@@ -84,13 +100,17 @@ export default function MeetingPage() {
 
       <div className="flex-1 flex items-center justify-center p-4">
         <div className="relative">
-          {/* Large purple circle */}
-          <div className="w-[600px] h-[600px] rounded-full border-2 border-[#6C5DD3] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+          <div className={`
+              w-[600px] h-[600px] rounded-full border-2 absolute top-1/2 left-1/2 
+              transform -translate-x-1/2 -translate-y-1/2
+              ${inMeeting ? 'border-accent animate-pulseExpand' : 'border-secondary'}
+            `}
+          />
           
           {/* Content container */}
           <div className="relative z-10 text-center">
             <h1 className="text-white text-5xl font-bold mb-12">{user?.user.full_name}</h1>
-            <Conversation dynamicVariables={dynamicVariables} onMessage={onMessage} clearTranscript={clearTranscript}/>
+            <Conversation dynamicVariables={dynamicVariables} onMessage={onMessage} clearTranscript={clearTranscript} setInMeeting={setInMeeting} onToolUsed={onToolUse}/>
             
           </div>
         </div>

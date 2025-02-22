@@ -11,13 +11,21 @@ interface ConversationProps {
   dynamicVariables: DynamicVariables;
   onMessage: (message: Message) => void;
   clearTranscript: () => void;
+  setInMeeting: (inMeeting: boolean) => void;
+  onToolUsed: (toolName: string) => void;
 }
 export function Conversation(
-  { dynamicVariables, onMessage, clearTranscript }: ConversationProps
+  { dynamicVariables, onMessage, clearTranscript, setInMeeting, onToolUsed}: ConversationProps
 ) {
   const conversation = useConversation({
-    onConnect: () => console.log('Connected'),
-    onDisconnect: () => console.log('Disconnected'),
+    onConnect: () => {
+      console.log('Connected');
+      setInMeeting(true);
+    },
+    onDisconnect: () => {
+      console.log('Disconnected');
+      setInMeeting(false);
+    },
     onMessage: onMessage,
     onError: (error: string) => console.error('Error:', error),
     onUnhandledClientToolCall: (toolName: string) => console.log('Unhandled client tool call:', toolName),
@@ -29,6 +37,7 @@ export function Conversation(
   const clientTools = {
     getJiraTicketsForUser: async ({ meetingId }: { meetingId: string }) => {
       console.log("getJiraTicketsForUser called");
+      onToolUsed("getJiraTickets")
       try {
         const response = await fetch(
           `${backend_url}/meeting/${meetingId}/api/jira/getTickets`
@@ -46,6 +55,8 @@ export function Conversation(
 
     getGitHubPRsForUser: async ({ meetingId }: { meetingId: string }) => {
       console.log("getGitHubPRsForUser called");
+      onToolUsed("getGitHubPRs")
+      
       try {
         const response = await fetch(
           `${backend_url}/meeting/${meetingId}/api/github/getPullRequests`
