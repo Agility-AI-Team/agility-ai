@@ -1,17 +1,28 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { TranscriptItem, TranscriptItemType } from '../models/transcriptItem';
 import { Wrench } from 'lucide-react';
-
-
 
 interface ChatSidebarProps {
   messages: TranscriptItem[];
 }
 
 export function ChatSidebar({ messages }: ChatSidebarProps) {
-  
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTo({
+        top: containerRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  }, [messages]);
+
   return (
-    <div className="fixed left-0 top-0 h-full w-80 bg-secondary/5 backdrop-blur-sm p-6 overflow-y-auto">
+    <div
+      ref={containerRef}
+      className="fixed left-0 top-0 h-full w-80 bg-secondary/5 backdrop-blur-sm p-6 overflow-y-auto"
+    >
       <div className="space-y-4">
         {messages.map((message, index) =>
           message.type === TranscriptItemType.TOOL ? (

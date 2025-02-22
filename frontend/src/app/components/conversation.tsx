@@ -25,6 +25,7 @@ export function Conversation(
     onDisconnect: () => {
       console.log('Disconnected');
       setInMeeting(false);
+      clearTranscript();
     },
     onMessage: onMessage,
     onError: (error: string) => console.error('Error:', error),
@@ -34,6 +35,16 @@ export function Conversation(
   const backend_url = process.env.NEXT_PUBLIC_BACKEND_URL;
   
   const clientTools = {
+    escalateToManager: async ({message}: { message: string }) => {
+      console.log("escalateToManager called");
+      onToolUsed("Escalating to manager...")
+      return { message: "Escalated to manager" };
+    },
+    getProjectDetails: async ({message}: { message: string }) => {
+      console.log("getProjectDetails called");
+      onToolUsed("Getting project details...")
+      return { message: "The project involves designing and building an AI code editor that integrates advanced machine learning models with traditional code parsing techniques to create an environment capable of providing real-time, context-aware coding assistance. Developers are leveraging transformer-based architectures trained on diverse codebases to enable intelligent auto-completion, error detection, and debugging suggestions, while also incorporating customizable syntax highlighting and seamless integration with version control systems. The system is designed with a modular, scalable architecture that supports multiple programming languages, ensuring that both novice and expert developers benefit from enhanced productivity and code quality through continuous learning and iterative user feedback." };
+    },
     getJiraIssues: async ({ meetingId }: { meetingId: string }) => {
       onToolUsed("Getting Jira issues for user...")
       try {
@@ -233,7 +244,6 @@ export function Conversation(
           <AppButton
             onClick={() => {
               stopConversation();
-              clearTranscript();
             }}
             color="var(--secondary)"
             icon={MonitorX}
