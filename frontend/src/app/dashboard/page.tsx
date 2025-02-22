@@ -23,7 +23,7 @@ const backend_url = process.env.NEXT_PUBLIC_BACKEND_URL;
 const styles = {
   container: "min-h-screen bg-background p-8",
   header: {
-    wrapper: "mb-8",
+    wrapper: "flex justify-between mb-8",
     title: "text-4xl font-bold",
     primary: "text-primary",
     text: "text-text"
@@ -275,6 +275,14 @@ function App() {
           <span className={styles.header.primary}>Insights</span>
           <span className={styles.header.text}>Dashboard</span>
         </h1>
+        <div className="flex justify-end">
+          <div className="flex items-center gap-2">
+            <div className="text-text">Human Manager</div>
+            <div className={styles.team.member.icon.wrapper}>
+              <User className={styles.team.member.icon.icon} />
+            </div>
+          </div>
+        </div>
       </header>
 
       <div className={styles.grid}>
