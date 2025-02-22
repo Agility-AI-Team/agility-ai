@@ -230,6 +230,8 @@ function App() {
   const [selectedMember, setSelectedMember] = useState<TeamMember>(teamData[0]);
   const [escalationNotes, setEscalationNotes] = useState<string[]>([]);
 
+  const [meetingSummary, setMeetingSummary] = useState<string[]>([]);
+
   useEffect(() => {
     const fetchEscalationNotes = async () => {
       try {
@@ -246,6 +248,25 @@ function App() {
     };
 
     fetchEscalationNotes();
+  }, [selectedMember]);
+
+  useEffect(() => {
+    const fetchMeetingSummary = async () => {
+      try {
+        const response = await fetch(`${backend_url}/meeting/78b6b5c5-4d2e-41ad-aef5-5b039994c7db/summary`, {
+          headers: {
+            'Accept': 'application/json',
+          }
+        });
+        const data = await response.json();
+        setMeetingSummary(data?.meeting_summary || []);
+      }
+      catch (error) {
+        console.error('Failed to fetch meeting summary:', error);
+      }
+    };
+
+    fetchMeetingSummary();
   }, [selectedMember]);
 
   return (
@@ -333,7 +354,7 @@ function App() {
           <div className={styles.rightColumn.meetings.container}>
             <h2 className={styles.rightColumn.meetings.title}>Meeting Summary</h2>
             <div className={styles.rightColumn.meetings.list}>
-              {selectedMember.meetingSummary.map((summary, index) => (
+              {meetingSummary.map((summary, index) => (
                 <div key={index} className={styles.rightColumn.meetings.item}>
                   <p className={styles.rightColumn.meetings.text}>{summary}</p>
                 </div>

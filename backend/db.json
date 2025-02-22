@@ -24,6 +24,11 @@
       "user_id": "f50ad4c3-4ca5-4343-8ba9-e3c02b3456a2",
       "escalation_notes": [
         "Chris needs admin access to AWS to deploy cloud changes."
+      ],
+      "meeting_summary": [
+        "Led morning standup",
+        "Reviewed PRs",
+        "Deployed changes to staging"
       ]
     }
   }

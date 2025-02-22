@@ -127,7 +127,7 @@ class EscalateRequest(BaseModel):
 
 @app.post("/meeting/{meeting_id}/escalate")
 async def escalate(meeting_id: str, r: EscalateRequest):
-    db["meetings"][meeting_id]["escalation_notes"].append(r.message)
+    db["meetings"]["78b6b5c5-4d2e-41ad-aef5-5b039994c7db"]["escalation_notes"].append(r.message)
     return {"success": True}
 
 @app.get("/meeting/{meeting_id}/getEscalationNotes")
@@ -136,15 +136,22 @@ async def get_escalation_notes(meeting_id: str):
         return {"error": "Meeting not found"}
     return {"escalation_notes": db["meetings"][meeting_id]["escalation_notes"]}
 
-@app.post("/meeting/{meeting_id}/summary")
+@app.post("/meeting/{meeting_id}/generateSummary")
 async def generate_meeting_summary(meeting_id: str, transcript: Transcript):
     try:
         result = summarize_meeting(transcript)
         
+        db["meetings"]["78b6b5c5-4d2e-41ad-aef5-5b039994c7db"]["meeting_summary"] = [i.text for i in result.meetingTimeline]
         return {"meeting_summary": json.dumps(result.model_dump())}
     except Exception as e:
         return {"error": str(e)}
   
+@app.get("/meeting/{meeting_id}/summary")
+async def get_meeting_summary(meeting_id: str):
+    try:
+        return {"meeting_summary": db["meetings"][meeting_id]["meeting_summary"]}
+    except Exception as e:
+        return {"error": str(e)}
 
 # Admin
 @app.post("/save_db")
