@@ -108,11 +108,11 @@ export default function MeetingPage() {
           />
           
           {/* Content container */}
-          <div className="relative z-10 text-center">
-            <h1 className="text-white text-5xl font-bold mb-12">{user?.user.full_name}</h1>
+            <div className="relative z-10 text-center">
+            <h1 className="text-white text-5xl font-bold mb-4">{user?.user.full_name}</h1>
+            <h2 className="text-gray-400 text-xl mb-12">Weekly catchup - 23 Feb 2025</h2>
             <Conversation dynamicVariables={dynamicVariables} onMessage={onMessage} clearTranscript={clearTranscript} setInMeeting={setInMeeting} onToolUsed={onToolUse}/>
-            
-          </div>
+            </div>
         </div>
       </div>
     </div>
