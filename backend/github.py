@@ -26,6 +26,7 @@ def github_get_pull_requests(owner: str, repo: str):
                 "id": pull_request["user"]["id"],
             },
             "title": pull_request["title"],
+            "body": pull_request["body"],
             "state": pull_request["state"],
             "created_at": pull_request["created_at"],
             "updated_at": pull_request["updated_at"],

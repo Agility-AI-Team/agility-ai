@@ -36,7 +36,6 @@ export function Conversation(
   
   const clientTools = {
     escalateToManager: async ({message}: { message: string }) => {
-      console.log("escalateToManager called");
       onToolUsed("Escalating to manager...")
       return { message: "Escalated to manager" };
     },
@@ -110,8 +109,7 @@ export function Conversation(
     },
 
     editJiraIssue: async ({ meetingId, issue_id, title, description, assignee_id, due_date }: { meetingId: string, issue_id: string, title?: string, description?: string, assignee_id?: string, due_date?: string }) => {
-      console.log("getJiraIssuesForUser called");
-      onToolUsed("getJiraIssues")
+      onToolUsed("Editing Jira issue...")
       try {
         const response = await fetch(
           `${backend_url}/meeting/${meetingId}/api/jira/editIssue`,

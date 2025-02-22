@@ -87,7 +87,6 @@ class EditIssueRequest(BaseModel):
 async def edit_issue(meeting_id: str, r: EditIssueRequest):
     result = jira_edit_issue(
         issue_id=r.issue_id,
-        status=r.status,
         summary=r.title,
         description=r.description,
         assignee_id=r.assignee_id,
