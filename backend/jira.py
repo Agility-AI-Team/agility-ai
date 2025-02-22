@@ -8,11 +8,12 @@ load_dotenv()
 
 BASE_URL = "https://agility-ai.atlassian.net/rest/api/3"
 API_KEY = os.getenv("JIRA_API_KEY")
+EMAIL = os.getenv("JIRA_EMAIL")
 DEFAULT_HEADERS = {
     "Accept": "application/json",
     "Content-Type": "application/json"
 }
-auth = HTTPBasicAuth("chrisyooak@gmail.com", API_KEY)
+auth = HTTPBasicAuth(EMAIL, API_KEY)
 
 def textToDoc(text: str):
     return {
@@ -34,32 +35,28 @@ def textToDoc(text: str):
 def jira_get_issues(project_key: str, assignee_id: str):
     url = f"{BASE_URL}/search/jql"
     query = {
-        'jql': f'project = {project_key} AND assignee = {assignee_id}',
+        'jql': f'project = {project_key}',  # AND assignee = {assignee_id}',
         "fields": ["summary", "status", "assignee", "description"],
-        # 'maxResults': 1000,
     }
-    response = requests.request(
-        "GET",
-        url,
-        headers=DEFAULT_HEADERS,
-        auth=auth,
-        params=query
-    )
-    
-    parsed = json.loads(response.text)
+    response = requests.get(url, headers=DEFAULT_HEADERS, auth=auth, params=query)
+    parsed = response.json()
     issues = []
-    for issue in parsed["issues"]:
-        issues.append({
-            "id": issue["id"],
-            "key": issue["key"],
-            "summary": issue["fields"]["summary"],
-            "status": issue["fields"]["status"]["name"],
+    
+    for issue in parsed.get("issues", []):
+        fields = issue.get("fields", {})
+        assignee_data = fields.get("assignee") or {}
+        issue_data = {
+            "id": issue.get("id"),
+            "key": issue.get("key"),
+            "summary": fields.get("summary"),
+            "status": fields.get("status", {}).get("name"),
             "assignee": {
-                "accountId": issue["fields"]["assignee"]["accountId"],
-                "displayName": issue["fields"]["assignee"]["displayName"],
+                "accountId": assignee_data.get("accountId"),
+                "displayName": assignee_data.get("displayName"),
             },
-            "description": issue["fields"]["description"]
-        })
+            "description": fields.get("description")
+        }
+        issues.append(issue_data)
 
     return issues
 
@@ -68,25 +65,21 @@ def jira_get_issue(issue_id: str):
     query = {
         "fields": ["summary", "status", "assignee", "description"],
     }
-    response = requests.request(
-        "GET",
-        url,
-        headers=DEFAULT_HEADERS,
-        auth=auth,
-        params=query
-    )
-    parsed = json.loads(response.text)
+    response = requests.get(url, headers=DEFAULT_HEADERS, auth=auth, params=query)
+    parsed = response.json()
+    fields = parsed.get("fields", {})
     result = {
-        "id": parsed["id"],
-        "key": parsed["key"],
-        "summary": parsed["fields"]["summary"],
-        "status": parsed["fields"]["status"]["name"],
-        "description": parsed["fields"]["description"]
+        "id": parsed.get("id"),
+        "key": parsed.get("key"),
+        "summary": fields.get("summary"),
+        "status": fields.get("status", {}).get("name"),
+        "description": fields.get("description"),
     }
-    if parsed["fields"]["assignee"]:
+    assignee_data = fields.get("assignee")
+    if assignee_data:
         result["assignee"] = {
-            "accountId": parsed["fields"]["assignee"]["accountId"],
-            "displayName": parsed["fields"]["assignee"]["displayName"],
+            "accountId": assignee_data.get("accountId"),
+            "displayName": assignee_data.get("displayName"),
         }
     return result
 
@@ -116,17 +109,11 @@ def jira_create_issue(
         payload["fields"]["assignee"] = {
             "accountId": assignee_id
         }
-    response = requests.request(
-        "POST",
-        url,
-        headers=DEFAULT_HEADERS,
-        auth=auth,
-        data=json.dumps(payload)
-    )
-    parsed = json.loads(response.text)
+    response = requests.post(url, headers=DEFAULT_HEADERS, auth=auth, data=json.dumps(payload))
+    parsed = response.json()
     return {
-        "id": parsed["id"],
-        "key": parsed["key"],
+        "id": parsed.get("id"),
+        "key": parsed.get("key"),
     }
 
 def jira_edit_issue(
@@ -151,31 +138,20 @@ def jira_edit_issue(
     if due_date:
         payload["fields"]["duedate"] = due_date
 
-    response = requests.request(
-        "PUT",
-        url,
-        headers=DEFAULT_HEADERS,
-        auth=auth,
-        data=json.dumps(payload)
-    )
+    response = requests.put(url, headers=DEFAULT_HEADERS, auth=auth, data=json.dumps(payload))
     if response.status_code == 204:
         return {"success": True}
     return {"success": False, "error": response.text}
 
 def jira_get_issue_transitions(issue_id: str):
     url = f"{BASE_URL}/issue/{issue_id}/transitions"
-    response = requests.request(
-        "GET",
-        url,
-        headers=DEFAULT_HEADERS,
-        auth=auth
-    )
-    parsed = json.loads(response.text)
+    response = requests.get(url, headers=DEFAULT_HEADERS, auth=auth)
+    parsed = response.json()
     transitions = []
-    for transition in parsed["transitions"]:
+    for transition in parsed.get("transitions", []):
         transitions.append({
-            "transition_id": transition["id"],
-            "status_display_name": transition["name"],
+            "transition_id": transition.get("id"),
+            "status_display_name": transition.get("name"),
         })
     return transitions
 
@@ -186,22 +162,16 @@ def jira_transition_issue(issue_id: str, transition_id: str):
             "id": transition_id
         }
     }
-    response = requests.request(
-        "POST",
-        url,
-        headers=DEFAULT_HEADERS,
-        auth=auth,
-        data=json.dumps(payload)
-    )
+    response = requests.post(url, headers=DEFAULT_HEADERS, auth=auth, data=json.dumps(payload))
     if response.status_code == 204:
         return {"success": True}
     return {"success": False, "error": response.text}
 
 if __name__ == "__main__":
-    # print(jira_get_issues("EX", "712020:a8a30946-e83b-4066-95ae-663a74bf7484"))
+    print(jira_get_issues("EX", "712020:a8a30946-e83b-4066-95ae-663a74bf7484"))
+    # Example usage:
     # print(jira_create_issue(project_key="EX", summary="Test Ticket", description="Test Description"))
     # print(jira_edit_issue("10009", summary="New Summary", description="New Description"))
     # print(jira_get_issue("10009"))
     # print(jira_get_issue_transitions("10009"))
     # print(jira_transition_issue("10009", "21"))
-    pass
