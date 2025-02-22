@@ -19,8 +19,6 @@ interface User {
   }
 }
 
-
-
 export default function MeetingPage() {
   const search_params = useSearchParams();
   const meeting_id = search_params.get('meetingId'); 
@@ -87,7 +85,7 @@ export default function MeetingPage() {
   const onToolUse = (tool: string) => {
     const item: TranscriptItem = {
       type: TranscriptItemType.TOOL,
-      text: `Used ${tool}`
+      text: `${tool}`
     }
     
     setTranscript((prev) => [...prev, item]);

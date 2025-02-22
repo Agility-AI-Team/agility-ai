@@ -32,15 +32,60 @@ export function Conversation(
   });
 
   const backend_url = process.env.NEXT_PUBLIC_BACKEND_URL;
-
   
   const clientTools = {
-    getJiraTicketsForUser: async ({ meetingId }: { meetingId: string }) => {
-      console.log("getJiraTicketsForUser called");
-      onToolUsed("getJiraTickets")
+    getJiraIssues: async ({ meetingId }: { meetingId: string }) => {
+      onToolUsed("Getting Jira issues for user...")
       try {
         const response = await fetch(
-          `${backend_url}/meeting/${meetingId}/api/jira/getTickets`
+          `${backend_url}/meeting/${meetingId}/api/jira/getIssues`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch Jira issues");
+        }
+        const data = await response.json();
+        return JSON.stringify(data);
+      } catch (error) {
+        console.error("Error in getJiraIssues:", error)
+        return JSON.stringify({ issues: [], error: "Error getting Jira issues" });
+      }
+    },
+
+    getJiraIssue: async ({ meetingId, issueId }: { meetingId: string, issueId: string }) => {
+      onToolUsed("Getting details for Jira issue...")
+      try {
+        const response = await fetch(
+          `${backend_url}/meeting/${meetingId}/api/jira/getIssue`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch details for Jira issue");
+        }
+        const data = await response.json();
+        return JSON.stringify(data);
+      } catch (error) {
+        console.error("Error in getJiraIssue:", error);
+        return JSON.stringify({ issue: [], error: "Error getting details for Jira issue" });
+      }
+    },
+
+    createJiraIssue: async ({ meetingId, title, description, assignee_id, due_date }: { meetingId: string, title: string, description: string, assignee_id?: string, due_date?: string }) => {
+      console.log("getJiraIssuesForUser called");
+      onToolUsed("getJiraIssues")
+      try {
+        const response = await fetch(
+          `${backend_url}/meeting/${meetingId}/api/jira/createIssue`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              title,
+              description,
+              assignee_id,
+              due_date
+            })
+          }
         );
         if (!response.ok) {
           throw new Error("Failed to fetch Jira tickets");
@@ -48,8 +93,84 @@ export function Conversation(
         const data = await response.json();
         return JSON.stringify(data);
       } catch (error) {
-        console.error("Error in getJiraTicketsForUser:", error);
+        console.error("Error in getJiraIssuesForUser:", error);
         return JSON.stringify({ tickets: [], error: "Error getting jira tickets" });
+      }
+    },
+
+
+    editJiraIssue: async ({ meetingId, issue_id, title, description, assignee_id, due_date }: { meetingId: string, issue_id: string, title?: string, description?: string, assignee_id?: string, due_date?: string }) => {
+      console.log("getJiraIssuesForUser called");
+      onToolUsed("getJiraIssues")
+      try {
+        const response = await fetch(
+          `${backend_url}/meeting/${meetingId}/api/jira/editIssue`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              issue_id,
+              title,
+              description,
+              assignee_id,
+              due_date
+            })
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to edit Jira issue");
+        }
+        const data = await response.json();
+        return JSON.stringify(data);
+      } catch (error) {
+        console.error("Error in getJiraIssuesForUser:", error);
+        return JSON.stringify({ tickets: [], error: "Error getting jira tickets" });
+      }
+    },
+
+    getJiraIssueTransitions: async ({ meetingId, issueId }: { meetingId: string, issueId: string }) => {
+      onToolUsed("Getting available statuses from Jira...")
+      try {
+        const response = await fetch(
+          `${backend_url}/meeting/${meetingId}/api/jira/getIssueTransitions?issue_id=${issueId}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to get available statuses from Jira");
+        }
+        const data = await response.json();
+        return JSON.stringify(data);
+      } catch (error) {
+        console.error("Error in getJiraIssue:", error);
+        return JSON.stringify({ transitions: [], error: "Error getting available statuses from Jira" });
+      }
+    },
+
+    changeJiraIssueStatus: async ({ meetingId, issueId, transitionId }: { meetingId: string, issueId: string, transitionId: string }) => {
+      onToolUsed("Changing status of Jira issue...")
+      try {
+        const response = await fetch(
+          `${backend_url}/meeting/${meetingId}/api/jira/transitionIssue`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              issue_id: issueId,
+              transition_id: transitionId
+            })
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to change status of Jira issue");
+        }
+        const data = await response.json();
+        return JSON.stringify(data);
+      } catch (error) {
+        console.error("Error in changeJiraIssueStatus:", error);
+        return JSON.stringify({ error: "Failed to change status of Jira issue" });
       }
     },
 
@@ -81,7 +202,7 @@ export function Conversation(
 
       // Start the conversation with your agent
       await conversation.startSession({
-        agentId: '0D9cKHmJBDMlFw8Po3Ii', // Replace with your agent ID
+        agentId: process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID,
         clientTools: clientTools,
         dynamicVariables: dynamicVariables,
       });

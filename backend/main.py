@@ -16,7 +16,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 with open("db.json") as f:
     db = json.load(f)
     jira_project_key = db["project"]["jira"]["project_key"]
@@ -76,7 +75,7 @@ async def create_issue(meeting_id: str, request: CreateIssueRequest):
 
 class EditIssueRequest(BaseModel):
     issue_id: str
-    summary: Optional[str] = None
+    title: Optional[str] = None
     description: Optional[str] = None
     assignee_id: Optional[str] = None
     due_date: Optional[str] = None # YYYY-MM-DD
@@ -86,7 +85,7 @@ async def edit_issue(meeting_id: str, request: EditIssueRequest):
     result = jira_edit_issue(
         issue_id=request.issue_id,
         status=request.status,
-        summary=request.summary,
+        summary=request.title,
         description=request.description,
         assignee_id=request.assignee_id,
         due_date=request.due_date,
@@ -98,9 +97,13 @@ async def get_issue_transitions(meeting_id: str, issue_id: str):
     transitions = jira_get_issue_transitions(issue_id=issue_id)
     return {"transitions": transitions}
 
+class TransitionIssueRequest(BaseModel):
+    issue_id: str
+    transition_id: str
+
 @app.post("/meeting/{meeting_id}/api/jira/transitionIssue")
-async def change_issue_status(meeting_id: str, issue_id: str, transition_id: str):
-    result = jira_transition_issue(issue_id=issue_id, transition_id=transition_id)
+async def change_issue_status(meeting_id: str, request: TransitionIssueRequest):
+    result = jira_transition_issue(issue_id=request.issue_id, transition_id=request.transition_id)
     return result
 
 # GitHub
