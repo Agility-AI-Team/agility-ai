@@ -11,7 +11,15 @@ export function Conversation() {
     onError: (error) => console.error('Error:', error),
   });
 
-
+  const clientTools = {
+    getJiraTicketsForUser: async () => {
+      return {};
+    },
+    getGitHubPRsForUser: async () => {
+      return {};
+    },
+  };
+  
   const startConversation = useCallback(async () => {
     try {
       // Request microphone permission

@@ -1,0 +1,13 @@
+{
+    "users": {
+        "f50ad4c3-4ca5-4343-8ba9-e3c02b3456a2": {
+            "id": "f50ad4c3-4ca5-4343-8ba9-e3c02b3456a2",
+            "meeting_ids": [],
+            "full_name": "Chris Yoo",
+            "gender": "M",
+            "github_id": "123456",
+            "jira_id": "123456"
+        }
+    },
+    "meetings": {}
+}
