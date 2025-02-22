@@ -102,6 +102,6 @@ async def get_pull_requests_for_user(meeting_id: str):
 # Admin
 @app.post("/save_db")
 async def save_db():
-    with open("users.json", "w") as f:
+    with open("db.json", "w") as f:
         json.dump(db, f, indent=2)
     return {"success": True}
